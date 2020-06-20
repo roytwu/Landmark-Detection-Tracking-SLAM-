@@ -6,7 +6,6 @@ Description: creates a robot with the specified parameters and initializes
 
 
 import numpy as np
-import matplotlib.pyplot as plt
 import random
 #matplotlib inline
 
