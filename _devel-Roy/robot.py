@@ -3,8 +3,6 @@ Author:      Roy Wu
 Description: creates a robot with the specified parameters and initializes 
              the location (self.x, self.y) to the center of the world
 """
-
-
 import numpy as np
 import random
 #matplotlib inline
@@ -12,10 +10,10 @@ import random
 
 #* the Robot class
 class Robot:
-    # -------- 
-    #   creates a robot with the specified parameters and initializes 
-    #   the location (self.x, self.y) to the center of the world
-    # -------- 
+    #*-------- 
+    #*   creates a robot with the specified parameters and initializes 
+    #*   the location (self.x, self.y) to the center of the world
+    #*-------- 
     def __init__(self, world_size = 100.0, measurement_range = 30.0,
                  motion_noise = 1.0, measurement_noise = 1.0):
         self.measurement_noise = 0.0
@@ -27,15 +25,17 @@ class Robot:
         self.measurement_noise = measurement_noise
         self.landmarks = []
         self.num_landmarks = 0
-        
-    # returns a positive, random float
+    
+    #*--------     
+    #*   returns a positive, random float
+    #*-------- 
     def rand(self):
         return random.random() * 2.0 - 1.0        
     
-    # --------
-    # move: attempts to move robot by dx, dy. If outside world
-    #       boundary, then the move does nothing and instead returns failure
-    #
+    #*-------- 
+    #*   attempts to move robot by dx, dy. If outside world boundary,
+    #*   then the move does nothing and instead returns failure
+    #*-------- 
     def move(self, dx, dy):
 
         x = self.x + dx + self.rand() * self.motion_noise
@@ -59,10 +59,9 @@ class Robot:
         return measurements
     
     
-    # --------
-    # make_landmarks: 
-    # make random landmarks located in the world
-    #
+    #*-------- 
+    #     make random landmarks located in the world
+    #*-------- 
     def make_landmarks(self, num_landmarks):
         self.landmarks = []
         for i in range(num_landmarks):
@@ -71,7 +70,9 @@ class Robot:
         self.num_landmarks = num_landmarks
     
     
-    # called when print(robot) is called; prints the robot's location
+    #*-------- 
+    #    called when print(robot) is called; prints the robot's location
+    #*-------- 
     def __repr__(self):
         return 'Robot: [x=%.5f y=%.5f]'  % (self.x, self.y)    
     

@@ -8,28 +8,27 @@ import matplotlib.pyplot as plt
 import robot                       #* custom library
 from helpers import display_world  #* custom library
 
-#* ----- ----- -----
-#* Define The World And A Robot
-#* ----- ----- -----
-
+#*----- ----- -----
+#*   Define The World And A Robot
+#*----- ----- -----
 world_size         = 10.0    # size of world (square)
 measurement_range  = 5.0     # range at which we can sense landmarks
 motion_noise       = 0.2     # noise in robot motion
 measurement_noise  = 0.2     # noise in the measurements
 
-# instantiate a robot, r
+#*instantiate a robot, r
 r = robot.Robot(world_size, measurement_range, motion_noise, measurement_noise)
 
-# print out the location of r
+#*print out the location of r
 print(r)
 
 
-#* ----- ----- -----
-#* Visualize The World
-#* ----- ----- -----
+#*----- ----- -----
+#*   Visualize The World
+#*----- ----- -----
 
-#* define figure size
-plt.rcParams["figure.figsize"] = (5,5)
+
+plt.rcParams["figure.figsize"] = (5,5)  #*define figure size
 
 #* call display_world and display the robot in it's grid world
 print(r)
