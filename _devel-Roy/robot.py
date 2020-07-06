@@ -54,7 +54,7 @@ class Robot:
         for index, landmark in enumerate(self.landmarks):
             dx = self.x - landmark[0] + self.rand()*self.measurement_noise
             dy = self.y - landmark[1] + self.rand()*self.measurement_noise
-            if (measurement_range == -1) or ((abs(dx) <= self.measurement_range) and (abs(dy) <= self.measurement_range)):
+            if (self.measurement_range == -1) or ((abs(dx) <= self.measurement_range) and (abs(dy) <= self.measurement_range)):
                 measurements.append([index, dx, dy])
         return measurements
     

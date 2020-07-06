@@ -4,7 +4,7 @@ Description: Define a small 10x10 square world, a measurement range that is
              half that of the world and small values for motion and measurement noise
 """
 import matplotlib.pyplot as plt
-from robot   import Robot          #* custom library
+import robot
 from helpers import display_world  #* custom library
 
 #*----- ----- -----
@@ -16,7 +16,7 @@ motion_noise       = 0.2     # noise in robot motion
 measurement_noise  = 0.2     # noise in the measurements
 
 #*instantiate a robot, r
-r = Robot(world_size, measurement_range, motion_noise, measurement_noise)
+r = robot.Robot(world_size, measurement_range, motion_noise, measurement_noise)
 print(r)  #* print out the location of r
 
 
@@ -37,10 +37,28 @@ display_world(int(world_size), [r.x, r.y])
 #*----- ----- -----
 #*   Create Landmark
 #*----- ----- -----
-#* create any number of landmarks
+#* create any number of landmarks 
+#* Each landmark is displayed as a purple x in the grid world
 num_landmarks = 3
 r.make_landmarks(num_landmarks)
 
 #* display the world including these landmarks
 display_world(int(world_size), [r.x, r.y], r.landmarks)
+
+measurements = r.sense()
+
+
+data = []
+
+#* after a robot first senses, then moves (one time step)
+#* that data is appended like so:
+data.append([measurements, [dx, dy]])
+
+#* for our example movement and measurement
+print(data)
+
+time_step = 0
+print('Motion: ', data[time_step][1])
+
+
 

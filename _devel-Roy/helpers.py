@@ -57,26 +57,25 @@ def display_world(world_size, position, landmarks=None):
 #*    the data is a list of measurements and movements: [measurements, [dx, dy]]
 #*    collected over a specified number of time steps, N
 #*--------
-def make_data(N, num_landmarks, world_size, measurement_range, motion_noise, 
-              measurement_noise, distance):
+def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, distance):
 
-    # check that data has been made
+    #* check that data has been made
     try:
-        check_for_data(num_landmarks, world_size, measurement_range, motion_noise, measurement_noise)
+        check_for_data(num_LDMK, world_size, meas_range, motion_noise, meas_noise)
     except ValueError:
         print('Error: You must implement the sense function in robot_class.py.')
         return []
     
     complete = False
     
-    r = robot(world_size, measurement_range, motion_noise, measurement_noise)
-    r.make_landmarks(num_landmarks)
+    r = Robot(world_size, meas_range, motion_noise, meas_noise)
+    r.make_landmarks(num_LDMK)
 
     while not complete:
 
         data = []
 
-        seen = [False for row in range(num_landmarks)]
+        seen = [False for row in range(num_LDMK)]
     
         # guess an initial motion
         orientation = random.random() * 2.0 * pi
@@ -103,7 +102,7 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
             data.append([Z, [dx, dy]])
 
         # we are done when all landmarks were observed; otherwise re-run
-        complete = (sum(seen) == num_landmarks)
+        complete = (sum(seen) == num_LDMK)
 
     print(' ')
     print('Landmarks: ', r.landmarks)
@@ -113,10 +112,10 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
     return data
 
 
-def check_for_data(num_landmarks, world_size, measurement_range, motion_noise, measurement_noise):
+def check_for_data(num_LDMK, world_size, meas_range, motion_noise, meas_noise):
     # make robot and landmarks
-    r = robot(world_size, measurement_range, motion_noise, measurement_noise)
-    r.make_landmarks(num_landmarks)
+    r = Robot(world_size, meas_range, motion_noise, meas_noise)
+    r.make_landmarks(num_LDMK)
     
     
     # check that sense has been implemented/data has been made
