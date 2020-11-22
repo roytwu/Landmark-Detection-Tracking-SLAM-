@@ -51,6 +51,20 @@ def display_world(world_size, position, landmarks=None):
     #* Display final result
     plt.show()
 
+#*--------
+#* check data
+#*--------
+def check_for_data(num_LDMK, world_size, meas_range, motion_noise, meas_noise):
+    # make robot and landmarks
+    r = Robot(world_size, meas_range, motion_noise, meas_noise)
+    r.make_landmarks(num_LDMK)
+    
+    
+    # check that sense has been implemented/data has been made
+    test_Z = r.sense()
+    if(test_Z is None):
+        raise ValueError
+    
     
 #*--------
 #*    this routine makes the robot data
@@ -72,17 +86,17 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
     r.make_landmarks(num_LDMK)
 
     while not complete:
-
         data = []
         seen = [False for row in range(num_LDMK)]
     
-        #* guess an initial motion
-        orientation = random.random() * 2.0 * pi
-        dx = cos(orientation) * distance
-        dy = sin(orientation) * distance
+
+    
+        # guess an initial motion
+        orientation = random.random() * 2.0 * np.pi
+        dx = np.cos(orientation) * distance
+        dy = np.sin(orientation) * distance
             
         for k in range(N-1):
-    
             #* collect sensor measurements in a list, Z
             Z = r.sense()
 
@@ -90,17 +104,17 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
             for i in range(len(Z)):
                 seen[Z[i][0]] = True
     
-            # move
+            #* move
             while not r.move(dx, dy):
                 #* if we'd be leaving the robot world, pick instead a new direction
-                orientation = random.random() * 2.0 * pi
-                dx = cos(orientation) * distance
-                dy = sin(orientation) * distance
+                orientation = random.random() * 2.0 * np.pi
+                dx = np.cos(orientation) * distance
+                dy = np.sin(orientation) * distance
 
-            # collect/memorize all sensor and motion data
+            #* collect/memorize all sensor and motion data
             data.append([Z, [dx, dy]])
 
-        # we are done when all landmarks were observed; otherwise re-run
+        #* we are done when all landmarks were observed; otherwise re-run
         complete = (sum(seen) == num_LDMK)
 
     print(' ')
@@ -111,13 +125,4 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
     return data
 
 
-def check_for_data(num_LDMK, world_size, meas_range, motion_noise, meas_noise):
-    # make robot and landmarks
-    r = Robot(world_size, meas_range, motion_noise, meas_noise)
-    r.make_landmarks(num_LDMK)
-    
-    
-    # check that sense has been implemented/data has been made
-    test_Z = r.sense()
-    if(test_Z is None):
-        raise ValueError
+
