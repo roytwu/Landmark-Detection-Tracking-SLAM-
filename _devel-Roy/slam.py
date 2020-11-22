@@ -19,16 +19,16 @@ def initialize_constraints(N, num_ldmk, world_size):
     #* Define the constraint matrix, Omega, with two initial "strength" values
     omega = np.zeros((rows, cols))
     #* initial x, y location of our robot
-    omega[0][0] = 1 
-    omega[1][1] = 1
+    omega[0][0] = 1. 
+    omega[1][1] = 1.
     
     #* Define the constraint *vector*, xi
     #* Assume the robot starts out in the middle of the world with 100% confidence
     
     #xi = [ rows, 1]
     xi = np.zeros((rows, 1))
-    xi[0][0] = world_size / 2
-    xi[1][0] = world_size / 2
+    xi[0][0] = world_size / 2.
+    xi[1][0] = world_size / 2.
     
     return omega, xi
 
@@ -53,6 +53,7 @@ def slam(data, N, num_ldmk, world_size, motion_noise, meas_noise):
         #* update the constraint matrix/vector to account for all *measurements*
         #* this should be a series of additions that take into account the measurement noise
         nweight = 1 / meas_noise
+        
         for m in measurements:
             landmark = m[0]
             x = m[1]
@@ -78,11 +79,7 @@ def slam(data, N, num_ldmk, world_size, motion_noise, meas_noise):
         
             omega[2*N+2*landmark+1, 2*i+1] += -nweight #x+landmark, y
         
-            omega[2*N+2*landmark+1, 2*N+2*landmark+1] += nweight  # x+landmark, y+landmark
-        
-             #xi[2*i , 1] += -y *weight  #vector update 1
-        
-              #xi[2*N + 2*landmark , 1] += y *weight   #vector update 2    
+            omega[2*N+2*landmark+1, 2*N+2*landmark+1] += nweight  # x+landmark, y+landmark  
 
             xi[2*i + 1, 0] += -y *nweight  #vector update 1
         
@@ -125,6 +122,10 @@ def slam(data, N, num_ldmk, world_size, motion_noise, meas_noise):
     #* Compute the best estimate of poses and landmark positions
     omega_inv = np.linalg.inv(np.matrix(omega))
     mu = omega_inv*xi
-
+    
+    
+    with open('omega.txt', 'w') as f:
+        for item in omega:
+            f.write("%s\n" % item)
     
     return mu 

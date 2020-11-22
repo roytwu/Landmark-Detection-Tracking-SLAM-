@@ -15,10 +15,10 @@ from helpers import display_world
 #*----- ----- -----
 #*   Define The World And A Robot
 #*----- ----- -----
-world_size         = 10.0    # size of world (square)
-measurement_range  = 5.0     # range at which we can sense landmarks
-motion_noise       = 0.2     # noise in robot motion
-measurement_noise  = 0.2     # noise in the measurements
+world_size         = 10.0       # size of world (square)
+measurement_range  = 5.0        # range at which we can sense landmarks
+motion_noise       = 0.0000001  # noise in robot motion
+measurement_noise  = 0.0000001  # noise in the measurements
 
 #*instantiate a robot, r
 r = robot.Robot(world_size, measurement_range, motion_noise, measurement_noise)
@@ -45,9 +45,9 @@ display_world(int(world_size), [r.x, r.y])
 #* create any number of landmarks 
 #* Each landmark is displayed as a purple x in the grid world
 num_landmarks = 3
-r.make_landmarks(num_landmarks)
+# r.make_landmarks(num_landmarks)
 
-# #* display the world including these landmarks
+#* display the world including these landmarks
 display_world(int(world_size), [r.x, r.y], r.landmarks)
 
 # measurements = r.sense()
@@ -63,10 +63,15 @@ display_world(int(world_size), [r.x, r.y], r.landmarks)
 # time_step = 0
 # print('Motion: ', data[time_step][1])
 N=6
-distance = 0.5
+distance = 1
 data = helpers.make_data(N, num_landmarks, world_size, measurement_range, 
                          motion_noise, measurement_noise, distance)
 
 mu = slam.slam(data, N, num_landmarks, world_size, motion_noise, measurement_noise)
 
+print(mu)
 print(mu.size)
+
+
+
+

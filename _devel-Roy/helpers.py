@@ -11,9 +11,9 @@ import seaborn as sns
 
 
 #*--------
-#*    The helper function displays the world that a robot is in
-#*    it assumes the world is a square grid of some given size
-#*    and that landmarks is a list of landmark positions (an optional argument)
+#*    Displays the world that a robot is in
+#*    Assume the world is a square grid of some given size
+#*    landmarks is a list of landmark positions (optional argument)
 #*--------
 def display_world(world_size, position, landmarks=None):
     
@@ -84,12 +84,13 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
     
     r = Robot(world_size, meas_range, motion_noise, meas_noise)
     r.make_landmarks(num_LDMK)
+    
+    #* display the world including these landmarks
+    display_world(int(world_size), [r.x, r.y], r.landmarks)
 
     while not complete:
         data = []
         seen = [False for row in range(num_LDMK)]
-    
-
     
         # guess an initial motion
         orientation = random.random() * 2.0 * np.pi
@@ -103,16 +104,20 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
             # check off all landmarks that were observed 
             for i in range(len(Z)):
                 seen[Z[i][0]] = True
-    
+                
             #* move
             while not r.move(dx, dy):
                 #* if we'd be leaving the robot world, pick instead a new direction
+                print ('\n while not is called.....')
                 orientation = random.random() * 2.0 * np.pi
                 dx = np.cos(orientation) * distance
                 dy = np.sin(orientation) * distance
 
             #* collect/memorize all sensor and motion data
             data.append([Z, [dx, dy]])
+            
+            # #* display the world including these landmarks
+            # display_world(int(world_size), [r.x, r.y], r.landmarks)
 
         #* we are done when all landmarks were observed; otherwise re-run
         complete = (sum(seen) == num_LDMK)
@@ -125,4 +130,33 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
     return data
 
 
+#*--------
+#*    Creates a list of poses and of landmarks for ease of printing
+#*    this only works for the suggested constraint architecture of interlaced x,y poses
+#*--------
+def get_poses_landmarks(mu, N, numLDMK):
+    # create a list of poses
+    poses = []
+    for i in range(N):
+        poses.append((mu[2*i].item(), mu[2*i+1].item()))
 
+    # create a list of landmarks
+    landmarks = []
+    for i in range(numLDMK):
+        landmarks.append((mu[2*(N+i)].item(), mu[2*(N+i)+1].item()))
+
+    # return completed lists
+    return poses, landmarks
+
+#*--------
+#*    print data
+#*--------
+def print_all(poses, landmarks):
+    print('\n')
+    print('Estimated Poses:')
+    for i in range(len(poses)):
+        print('['+', '.join('%.3f'%p for p in poses[i])+']')
+    print('\n')
+    print('Estimated Landmarks:')
+    for i in range(len(landmarks)):
+        print('['+', '.join('%.3f'%l for l in landmarks[i])+']')
