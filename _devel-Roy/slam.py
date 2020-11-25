@@ -48,80 +48,70 @@ def slam(data, N, num_ldmk, world_size, motion_noise, meas_noise):
         measurements = data[i][0]
         motion = data[i][1]
         dx = motion[0]
+        dy = motion[1]
+        mweight = 1.0 / motion_noise
+        nweight = 1.0 / meas_noise
+        # print('\nmweight is...', mweight)
+        # print('nweight is...', nweight)
     
-            
-        #* update the constraint matrix/vector to account for all *measurements*
-        #* this should be a series of additions that take into account the measurement noise
-        nweight = 1 / meas_noise
+        #* even number colus of Omega corresponds to x values
+        x0 = 2*i    #* 0, 2, 4, 6, ...
+        x1 = 2*i+2  #* 2, 4, 6, 8,...
+        
+        #* odd number colus of Omega corresponds to y values
+        y0 = 2*i +1  #* 1, 3, 5, 7, ...
+        y1 = 2*i +3  #* 3, 5, 7, 9,...        
         
         for m in measurements:
-            landmark = m[0]
-            x = m[1]
-            y=  m[2]
+            landmark = m[0]  #*landmark ID
+            dxM = m[1]
+            dyM=  m[2]
+            
+            x0L = (2*N) +(landmark*2) #* even-numbered columns have x values of landmarks
+            y0L = x0L+1               #* odd-numbered columns have y values of landmarks
             
             #*for x value
-            omega[2*i, 2*i] += nweight    #x,y
-            
-            omega[2*i, 2*N + 2*landmark] += -nweight   # x, y+landmark
-        
-            omega[2*N + 2*landmark, 2*i] += -nweight    #x+ landmark,y
-        
-            omega[2*N + 2*landmark, 2*N + 2*landmark] += nweight  # x+landmark,y+landmark
-
-            xi[2*i, 0] += -x *nweight  #vector update 1
-        
-            xi[2*N + 2*landmark, 0] += x *nweight  #vector update 2
+            omega[x0,  x0]  += nweight   #x,y
+            omega[x0,  x0L] += -nweight  # x, y+landmark
+            omega[x0L, x0]  += -nweight  #x+ landmark,y
+            omega[x0L, x0L] += nweight   # x+landmark,y+landmark
 
             # for y value
-            omega[2*i+1, 2*i+1] += nweight  #x,y
-        
-            omega[2*i+1, 2*N + 2*landmark+1] += -nweight # x, y+landmark
-        
-            omega[2*N+2*landmark+1, 2*i+1] += -nweight #x+landmark, y
-        
-            omega[2*N+2*landmark+1, 2*N+2*landmark+1] += nweight  # x+landmark, y+landmark  
+            omega[y0,  y0]  += nweight  # x,y
+            omega[y0,  y0L] += -nweight # x, y+landmark
+            omega[y0L, y0]  += -nweight # x+landmark, y
+            omega[y0L, y0L] += nweight  # x+landmark, y+landmark  
+            
+            xi[x0,  0] += -dxM *nweight  #vector update 1
+            xi[x0L, 0] += dxM *nweight   #vector update 2
+            xi[y0,  0] += -dyM *nweight  #vector update 1
+            xi[y0L, 0] += dyM *nweight   #vector update 2   
 
-            xi[2*i + 1, 0] += -y *nweight  #vector update 1
-        
-            xi[2*N + 2*landmark + 1, 0] += y *nweight   #vector update 2   
         
      ## TODO: update the constraint matrix/vector to account for all *motion* and motion noise       
-        dx = motion[0]             
-        dy = motion[1]
-        mweight = 1 / motion_noise
-        
      #now for dx value  
-    
-        omega[2*i, 2*i] +=  mweight
+        omega[x0, x0] +=  mweight
+        omega[x0, x1] += - mweight
+        omega[x1, x0] += - mweight
+        omega[x1, x1] +=  mweight
         
-        omega[2*i, 2*i+2] += - mweight
-        omega[2*i+2, 2*i] += - mweight
+     # for dy value  
+        omega[y0, y0] +=  mweight
+        omega[y0, y1] += - mweight
+        omega[y1, y0] += - mweight
+        omega[y1, y1] +=  mweight 
         
-        omega[2*i+2, 2*i+2] +=  mweight
-        
-        xi[2*i, 0] += -dx  *mweight     #vector update 1
-        
-        xi[2* +2, 0] += dx * mweight  #vector update 2 
-        
- # for dy value  
+        xi[x0, 0] += -dx * mweight #vector update 1
+        xi[x1, 0] += dx * mweight  #vector update 2 
+        xi[y0, 0] += -dy * mweight    #vector update 1
+        xi[y1, 0] += dy * mweight    #vector update 2 
 
-        omega[2*i+1, 2*i+1] +=  mweight
-        
-        omega[2*i+1, 2*i+3] += - mweight
-        
-        omega[2*i+3, 2*i+1] += - mweight
-        
-        omega[2*i+3, 2*i+3] +=  mweight 
-        
-
-        xi[2*i+1, 0] += -dy * mweight    #vector update 1
-        xi[2*i+3, 0] += dy * mweight    #vector update 2 
     
        
     #* After iterating through all the data
     #* Compute the best estimate of poses and landmark positions
-    omega_inv = np.linalg.inv(np.matrix(omega))
-    mu = omega_inv*xi
+    omega_inv = np.linalg.inv(omega)
+    mu=np.matmul(omega_inv, xi)
     
     
     with open('omega.txt', 'w') as f:

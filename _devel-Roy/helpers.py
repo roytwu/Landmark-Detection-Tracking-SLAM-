@@ -92,7 +92,7 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
         data = []
         seen = [False for row in range(num_LDMK)]
     
-        # guess an initial motion
+        #* guess an initial motion
         orientation = random.random() * 2.0 * np.pi
         dx = np.cos(orientation) * distance
         dy = np.sin(orientation) * distance
@@ -108,7 +108,7 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
             #* move
             while not r.move(dx, dy):
                 #* if we'd be leaving the robot world, pick instead a new direction
-                print ('\n while not is called.....')
+                # print ('\n while not is called.....')
                 orientation = random.random() * 2.0 * np.pi
                 dx = np.cos(orientation) * distance
                 dy = np.sin(orientation) * distance
@@ -123,7 +123,7 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
         complete = (sum(seen) == num_LDMK)
 
     print(' ')
-    print('Landmarks: ', r.landmarks)
+    print('Landmark locations ', r.landmarks)
     print(r)
 
 

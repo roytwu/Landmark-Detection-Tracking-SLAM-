@@ -5,7 +5,6 @@ Description: creates a robot with the specified parameters and initializes
 """
 import numpy as np
 import random
-#matplotlib inline
 
 
 #* the Robot class
@@ -29,20 +28,23 @@ class Robot:
     #*   returns a positive, random float
     #*-------- 
     def rand(self):
-        return random.random() * 2.0 - 1.0        
-
+        # value = random.random() * 2.0 - 1.0      
+        value =(random.random()*2.0-1.0)  
+        return value   
     
     #*-------- 
     #*   attempts to move robot by dx, dy. If outside world boundary,
     #*   then the move does nothing and instead returns failure
     #*-------- 
     def move(self, dx, dy):
-        print ('\nmove is called.....')
-        
-        xNoise = self.rand() * self.motion_noise*0.001
-        print ('\n xNoise is.....', xNoise)
-        x = self.x + dx + xNoise
-        y = self.y + dy + self.rand() * self.motion_noise*0.001
+        # print ('\nmove is called.....')
+        print('x is move() is', self.x)
+        noise = self.rand() * self.motion_noise
+        # noise=0
+        # print ('\n noise in Movee function is.....', noise)
+        x = self.x + dx + noise
+        y = self.y + dy + noise
+        # print('x is move() is', x)
         
         # print ('\nmotion noise is...', self.motion_noise)
         if x < 0.0 or x > self.world_size or y < 0.0 or y > self.world_size:
@@ -59,10 +61,13 @@ class Robot:
     #*--------     
     def sense(self): 
         measurements = []
-        
+        noise = self.rand() * self.meas_noise
+        # noise = 0
         for index, landmark in enumerate(self.landmarks):
-            dx = self.x - landmark[0] + self.rand()*self.meas_noise*0.001
-            dy = self.y - landmark[1] + self.rand()*self.meas_noise*0.001
+            # dx = self.x - landmark[0] + noise
+            # dy = self.y - landmark[1] + noise
+            dx = landmark[0] - self.x  + noise
+            dy = landmark[1] - self.y  + noise
             if (self.meas_range==-1) or ( (abs(dx)<=self.meas_range)and(abs(dy)<=self.meas_range) ):
                 measurements.append([index, dx, dy])
         # print ('\nmeasurement noise is...', self.meas_noise)        
@@ -95,7 +100,7 @@ class Robot:
     #    called when print(robot) is called; prints the robot's location
     #*-------- 
     def __repr__(self):
-        return 'Robot: [x=%.5f y=%.5f]'  % (self.x, self.y)    
+        return 'Robot loation [x=%.5f y=%.5f]'  % (self.x, self.y)    
     
     
     
