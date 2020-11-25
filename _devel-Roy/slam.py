@@ -24,8 +24,6 @@ def initialize_constraints(N, num_ldmk, world_size):
     
     #* Define the constraint *vector*, xi
     #* Assume the robot starts out in the middle of the world with 100% confidence
-    
-    #xi = [ rows, 1]
     xi = np.zeros((rows, 1))
     xi[0][0] = world_size / 2.
     xi[1][0] = world_size / 2.

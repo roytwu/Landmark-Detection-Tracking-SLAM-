@@ -116,8 +116,8 @@ def make_data(N, num_LDMK, world_size, meas_range, motion_noise, meas_noise, dis
             #* collect/memorize all sensor and motion data
             data.append([Z, [dx, dy]])
             
-            # #* display the world including these landmarks
-            # display_world(int(world_size), [r.x, r.y], r.landmarks)
+            #* display the world (in motion)
+            display_world(int(world_size), [r.x, r.y], r.landmarks)
 
         #* we are done when all landmarks were observed; otherwise re-run
         complete = (sum(seen) == num_LDMK)

@@ -1,11 +1,9 @@
 """
 Author:      Roy Wu
-Description: creates a robot with the specified parameters and initializes 
-             the location (self.x, self.y) to the center of the world
+Description: creates a mobile robot for SLAM
 """
 import numpy as np
 import random
-
 
 #* the Robot class
 class Robot:
@@ -28,13 +26,13 @@ class Robot:
     #*   returns a positive, random float
     #*-------- 
     def rand(self):
-        # value = random.random() * 2.0 - 1.0      
-        value =(random.random()*2.0-1.0)  
+        value = random.random() * 2.0 - 1.0      
+        # value =(random.random()*2.0-1.0)*0.1  
         return value   
     
     #*-------- 
-    #*   attempts to move robot by dx, dy. If outside world boundary,
-    #*   then the move does nothing and instead returns failure
+    #*   Attempts to move robot by dx, dy. 
+    #*   If outside world boundary, then do nothing and returns failure
     #*-------- 
     def move(self, dx, dy):
         # print ('\nmove is called.....')
@@ -57,7 +55,7 @@ class Robot:
        
     #*-------- 
     #*   Sense the environment (landmarks)
-    #*  
+    #*   (take no argument)
     #*--------     
     def sense(self): 
         measurements = []
